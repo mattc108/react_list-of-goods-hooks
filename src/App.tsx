@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import 'bulma/css/bulma.css';
 import './App.scss';
 
+enum SortType {
+  Default = 'default',
+  Length = 'length',
+  Alphabetically = 'alphabetically',
+}
+
 export const goodsFromServer: string[] = [
   'Dumplings',
   'Carrot',
@@ -26,15 +32,15 @@ export const GoodList = ({ goods }: { goods: string[] }) => (
 );
 
 export const App: React.FC = () => {
-  const [sortField, setSortField] = useState('');
-  const [reversed, setReversed] = useState(false);
+  const [sortField, setSortField] = useState<SortType>(SortType.Default);
+  const [reversed, setReversed] = useState<boolean>(false);
 
   let displayedGoods: string[] = [...goodsFromServer].sort(
     (good1: string, good2: string) => {
       switch (sortField) {
-        case 'length':
+        case SortType.Length:
           return good1.length - good2.length;
-        case 'alphabetically':
+        case SortType.Alphabetically:
           return good1.localeCompare(good2);
         default:
           return 0;
@@ -51,16 +57,16 @@ export const App: React.FC = () => {
       <div className="buttons">
         <button
           type="button"
-          onClick={() => setSortField('alphabetically')}
-          className={`button is-info ${sortField !== 'alphabetically' ? 'is-light' : ''}`}
+          onClick={() => setSortField(SortType.Alphabetically)}
+          className={`button is-info ${sortField !== SortType.Alphabetically ? 'is-light' : ''}`}
         >
           Sort alphabetically
         </button>
 
         <button
           type="button"
-          onClick={() => setSortField('length')}
-          className={`button is-success ${sortField !== 'length' ? 'is-light' : ''}`}
+          onClick={() => setSortField(SortType.Length)}
+          className={`button is-success ${sortField !== SortType.Length ? 'is-light' : ''}`}
         >
           Sort by length
         </button>
@@ -73,11 +79,11 @@ export const App: React.FC = () => {
           Reverse
         </button>
 
-        {reversed || sortField !== '' ? (
+        {reversed || sortField !== SortType.Default ? (
           <button
             type="button"
             onClick={() => {
-              setSortField('');
+              setSortField(SortType.Default);
               setReversed(false);
             }}
             className="button is-danger is-light"
